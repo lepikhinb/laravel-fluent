@@ -1,22 +1,23 @@
 {
-    "name": "archtechx/replace",
+    "name": "based/laravel-fluent",
     "description": "",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Samuel Štancl",
-            "email": "samuel@archte.ch"
+            "name": "Boris Lepikhin",
+            "email": "boris@lepikhin.com"
         }
     ],
     "autoload": {
         "psr-4": {
-            "ArchTech\\REPLACE\\": "src/"
+            "Based\\Fluent\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ArchTech\\REPLACE\\Tests\\": "tests/"
+            "Based\\Fluent\\Tests\\": "tests/",
+            "Based\\Fluent\\Tests\\Models\\": "tests/Pest/Models"
         }
     },
     "require": {
@@ -32,8 +33,12 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ArchTech\\REPLACE\\PackageServiceProvider"
+                "Based\\Fluent\\FluentServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "test": "./vendor/bin/pest",
+        "stan": "./vendor/bin/phpstan analyse"
     }
 }

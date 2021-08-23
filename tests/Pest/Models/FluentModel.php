@@ -1,0 +1,32 @@
+<?php
+
+namespace Based\Fluent\Tests\Models;
+
+use Based\Fluent\Casts\AsDecimal;
+use Based\Fluent\Casts\Cast;
+use Based\Fluent\Fluent;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+
+class FluentModel extends Model
+{
+    use Fluent;
+
+    public string $string;
+    public int $integer;
+    public float $float;
+    public object $object;
+    public array $array;
+    public Collection $collection;
+    public Carbon $carbon;
+    public bool $boolean;
+
+    #[Cast('decimal:2')]
+    public float $decimal;
+
+    #[AsDecimal(3)]
+    public float $as_decimal;
+
+    protected $guarded = [];
+}
