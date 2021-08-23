@@ -121,7 +121,7 @@ trait Fluent
 
             return collect([
                 $caster->name,
-                $caster->modifier ?? null
+                $caster->modifier ?? null,
             ])
                 ->whereNotNull()
                 ->join(':');
