@@ -13,7 +13,6 @@ test('public attributes hydrate on model load', function () {
     /** @var FluentModel $model */
     $model = FluentModel::first();
 
-    assertEquals('string', $model->getCasts()['string']);
     assertEquals('value', $model->string);
     assertEquals($model->getAttribute('string'), $model->string);
     assertEquals('value', $model->toArray()['string']);
@@ -66,4 +65,34 @@ test('model serializes to array with actual values', function () {
 
     assertEquals('two', $model->toArray()['string']);
     assertEquals(2, $model->toArray()['integer']);
+});
+
+test('public properties populate on fill', function () {
+    $model = new FluentModel([
+        'string' => 'one',
+    ]);
+
+    /** @var FluentModel $model */
+    $model->fill([
+        'string' => 'two',
+    ]);
+
+    assertEquals('two', $model->string);
+    assertEquals($model->getAttribute('string'), $model->string);
+    assertEquals('two', $model->toArray()['string']);
+});
+
+test('public properties populate on update', function () {
+    /** @var FluentModel $model */
+    $model = FluentModel::create([
+        'string' => 'one',
+    ]);
+
+    $model->update([
+        'string' => 'two',
+    ]);
+
+    assertEquals('two', $model->string);
+    assertEquals($model->getAttribute('string'), $model->string);
+    assertEquals('two', $model->toArray()['string']);
 });

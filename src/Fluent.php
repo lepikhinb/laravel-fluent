@@ -24,6 +24,11 @@ trait Fluent
         $this->hydrateFluentProperties();
     }
 
+    /**
+     * Get public properties
+     * 
+     * @return \Illuminate\Support\Collection 
+     */
     public function getFluentProperties(): Collection
     {
         if (isset($this->fluentProperties)) {
@@ -36,6 +41,24 @@ trait Fluent
             ->filter(fn (ReflectionProperty $property) => $property->class === self::class);
     }
 
+    public function setAttribute($key, $value)
+    {
+        // tricky part to prevent attribute overwriting by mergeAttributesFromClassCasts
+        unset($this->{$key});
+
+        parent::setAttribute($key, $value);
+
+        $this->{$key} = $this->getAttribute($key);
+
+        return $this;
+    }
+
+    /**
+     * Overload the HasAttributes' method to populate attributes from public properties
+     * Merge the cast class attributes back into the model.
+     *
+     * @return void
+     */
     public function mergeAttributesFromClassCasts()
     {
         $this->getFluentProperties()
@@ -49,6 +72,11 @@ trait Fluent
         parent::mergeAttributesFromClassCasts();
     }
 
+    /**
+     * Hydrate public properties on model retrieve
+     * 
+     * @return void 
+     */
     protected static function bootFluent()
     {
         self::retrieved(function (self $model) {
@@ -71,6 +99,11 @@ trait Fluent
             });
     }
 
+    /**
+     * Build model casts for public properties 
+     * 
+     * @return void 
+     */
     protected function buildFluentCasts(): void
     {
         $nativeCasts = $this->getFluentProperties()
@@ -93,6 +126,12 @@ trait Fluent
         $this->casts = array_merge($this->casts, $nativeCasts);
     }
 
+    /**
+     * Get cast type from native type
+     * 
+     * @param  \ReflectionProperty  $property 
+     * @return null|string 
+     */
     protected function getFluentCastType(ReflectionProperty $property): ?string
     {
         $type = str_replace('?', '', $property->getType());
@@ -110,6 +149,12 @@ trait Fluent
         };
     }
 
+    /**
+     * Get cast type defined by an attribute
+     * 
+     * @param  \ReflectionAttribute  $attribute 
+     * @return null|string 
+     */
     protected function castFluentAttribute(ReflectionAttribute $attribute): ?string
     {
         if ($attribute->getName() === Cast::class) {
