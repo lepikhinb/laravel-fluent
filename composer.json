@@ -1,6 +1,6 @@
 {
     "name": "based/laravel-fluent",
-    "description": "",
+    "description": "Define model attributes the fluent way. Automatically cast properties to native types.",
     "type": "library",
     "license": "MIT",
     "authors": [
