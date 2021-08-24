@@ -25,9 +25,9 @@ trait Fluent
     }
 
     /**
-     * Get public properties
-     * 
-     * @return \Illuminate\Support\Collection 
+     * Get public properties.
+     *
+     * @return \Illuminate\Support\Collection<ReflectionProperty>|ReflectionProperty[]
      */
     public function getFluentProperties(): Collection
     {
@@ -41,20 +41,32 @@ trait Fluent
             ->filter(fn (ReflectionProperty $property) => $property->class === self::class);
     }
 
+    /**
+     * Overload the method to populate public properties from Model attributes
+     * Set a given attribute on the model.
+     * 
+     * @param  mixed  $key 
+     * @param  mixed  $value 
+     * @return $this 
+     */
     public function setAttribute($key, $value)
     {
-        // tricky part to prevent attribute overwriting by mergeAttributesFromClassCasts
-        unset($this->{$key});
+        // Tricky part to prevent attribute overwriting by mergeAttributesFromClassCasts
+        if ($this->hasFluentProperty($key)) {
+            unset($this->{$key});
+        }
 
         parent::setAttribute($key, $value);
 
-        $this->{$key} = $this->getAttribute($key);
+        if ($this->hasFluentProperty($key)) {
+            $this->{$key} = $this->getAttribute($key);
+        }
 
         return $this;
     }
 
     /**
-     * Overload the HasAttributes' method to populate attributes from public properties
+     * Overload the method to populate attributes from public properties
      * Merge the cast class attributes back into the model.
      *
      * @return void
@@ -73,36 +85,47 @@ trait Fluent
     }
 
     /**
-     * Hydrate public properties on model retrieve
-     * 
-     * @return void 
+     * Hydrate public properties on model retrieve.
+     *
+     * @return void
      */
     protected static function bootFluent()
     {
         self::retrieved(function (self $model) {
-            $model->getFluentProperties()
-                ->filter(fn (ReflectionProperty $property) => $model->getAttribute($property->getName()))
-                ->each(function (ReflectionProperty $property) use ($model) {
-                    $model->{$property->getName()} = $model->getAttribute($property->getName());
-                });
+            $model->hydrateFluentProperties();
         });
     }
 
-    protected function hydrateFluentProperties(): void
+    /**
+     * Determine if a model has a public property
+     * 
+     * @param  string  $key 
+     * @return bool 
+     */
+    protected function hasFluentProperty(string $key): bool
+    {
+        return $this->getFluentProperties()
+            ->contains(fn (ReflectionProperty $property) => $property->getName() === $key);
+    }
+
+    /**
+     * Hydrate public properties with attributes data
+     * 
+     * @return void 
+     */
+    public function hydrateFluentProperties(): void
     {
         $this->getFluentProperties()
-            ->filter(function (ReflectionProperty $property) {
-                return in_array($property->getName(), array_keys($this->getAttributes()));
-            })
+            ->filter(fn (ReflectionProperty $property) => $this->getAttribute($property->getName()))
             ->each(function (ReflectionProperty $property) {
                 $this->{$property->getName()} = $this->getAttribute($property->getName());
             });
     }
 
     /**
-     * Build model casts for public properties 
+     * Build model casts for public properties.
      * 
-     * @return void 
+     * @return void
      */
     protected function buildFluentCasts(): void
     {
@@ -127,7 +150,7 @@ trait Fluent
     }
 
     /**
-     * Get cast type from native type
+     * Get cast type from native property type.
      * 
      * @param  \ReflectionProperty  $property 
      * @return null|string 
@@ -150,7 +173,7 @@ trait Fluent
     }
 
     /**
-     * Get cast type defined by an attribute
+     * Get cast type defined by an attribute.
      * 
      * @param  \ReflectionAttribute  $attribute 
      * @return null|string 

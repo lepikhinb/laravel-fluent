@@ -14,7 +14,7 @@ $rules = [
     ],
     'blank_line_after_namespace' => true,
     'blank_line_after_opening_tag' => true,
-    'no_superfluous_phpdoc_tags' => true,
+    'no_superfluous_phpdoc_tags' => false,
     'blank_line_before_statement' => [
         'statements' => ['return']
     ],
