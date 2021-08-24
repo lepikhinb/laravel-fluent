@@ -139,7 +139,7 @@ test('cast as decimal with attribute caster', function () {
     assertEquals($model->getAttribute('as_decimal'), $model->as_decimal);
 });
 
-test('set null to nullable property', function () {
+test('set nullable property to null', function () {
     $model = new FluentModel([
         'nullable_array' => null,
     ]);

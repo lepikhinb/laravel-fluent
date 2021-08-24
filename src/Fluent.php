@@ -78,7 +78,7 @@ trait Fluent
                 return $property->isInitialized($this);
             })
             ->each(function (ReflectionProperty $property) {
-                $this->setAttribute($property->getName(), $this->{$property->getName()});
+                parent::setAttribute($property->getName(), $this->{$property->getName()});
             });
 
         parent::mergeAttributesFromClassCasts();
@@ -116,9 +116,15 @@ trait Fluent
     public function hydrateFluentProperties(): void
     {
         $this->getFluentProperties()
-            ->filter(fn (ReflectionProperty $property) => $this->getAttribute($property->getName()))
+            ->filter(fn (ReflectionProperty $propety) => array_key_exists($propety->getName(), $this->attributes))
             ->each(function (ReflectionProperty $property) {
-                $this->{$property->getName()} = $this->getAttribute($property->getName());
+                $value = $this->getAttribute($property->getName());
+
+                if (is_null($value) && !$property->getType()->allowsNull()) {
+                    return;
+                }
+
+                $this->{$property->getName()} = $value;
             });
     }
 
