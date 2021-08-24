@@ -29,5 +29,8 @@ class FluentModel extends Model
     #[AsDecimal(3)]
     public float $as_decimal;
 
+    #[Cast('encrypted')]
+    public string $encrypted;
+
     protected $guarded = [];
 }

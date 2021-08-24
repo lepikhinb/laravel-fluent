@@ -4,6 +4,7 @@ use Based\Fluent\Tests\Models\FluentModel;
 
 use function Pest\Laravel\assertDatabaseCount;
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertNotEquals;
 use function PHPUnit\Framework\assertTrue;
 
 test('cast as string', function () {
@@ -149,4 +150,18 @@ test('set null to nullable property', function () {
     assertEquals('array', $model->getCasts()['nullable_array']);
     assertEquals(null, $model->nullable_array);
     assertEquals($model->getAttribute('nullable_array'), $model->nullable_array);
+});
+
+test('cast as encrypted', function () {
+    $model = new FluentModel([
+        'encrypted' => 'value',
+    ]);
+
+    $model->save();
+
+    assertDatabaseCount('fluent_models', 1);
+    assertEquals('encrypted', $model->getCasts()['encrypted']);
+    assertEquals('value', $model->encrypted);
+    assertNotEquals('value', $model->getRawOriginal('encrypted'));
+    assertEquals($model->getAttribute('encrypted'), $model->encrypted);
 });

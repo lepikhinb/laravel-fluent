@@ -33,6 +33,7 @@ class TestCase extends TestbenchTestCase
             $table->timestamp('as_date')->nullable();
             $table->string('withoutCast')->nullable();
             $table->json('nullable_array')->nullable();
+            $table->string('encrypted')->nullable();
             $table->timestamps();
         });
     }
