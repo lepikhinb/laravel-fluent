@@ -116,7 +116,7 @@ trait Fluent
     public function hydrateFluentProperties(): void
     {
         $this->getFluentProperties()
-            ->filter(fn (ReflectionProperty $propety) => array_key_exists($propety->getName(), $this->attributes))
+            ->filter(fn (ReflectionProperty $property) => array_key_exists($property->getName(), $this->attributes))
             ->each(function (ReflectionProperty $property) {
                 $value = $this->getAttribute($property->getName());
 
