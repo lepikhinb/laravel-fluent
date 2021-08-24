@@ -44,10 +44,10 @@ trait Fluent
     /**
      * Overload the method to populate public properties from Model attributes
      * Set a given attribute on the model.
-     * 
-     * @param  mixed  $key 
-     * @param  mixed  $value 
-     * @return $this 
+     *
+     * @param  mixed  $key
+     * @param  mixed  $value
+     * @return $this
      */
     public function setAttribute($key, $value)
     {
@@ -97,10 +97,10 @@ trait Fluent
     }
 
     /**
-     * Determine if a model has a public property
-     * 
-     * @param  string  $key 
-     * @return bool 
+     * Determine if a model has a public property.
+     *
+     * @param  string  $key
+     * @return bool
      */
     protected function hasFluentProperty(string $key): bool
     {
@@ -109,9 +109,9 @@ trait Fluent
     }
 
     /**
-     * Hydrate public properties with attributes data
-     * 
-     * @return void 
+     * Hydrate public properties with attributes data.
+     *
+     * @return void
      */
     public function hydrateFluentProperties(): void
     {
@@ -124,7 +124,7 @@ trait Fluent
 
     /**
      * Build model casts for public properties.
-     * 
+     *
      * @return void
      */
     protected function buildFluentCasts(): void
@@ -151,9 +151,9 @@ trait Fluent
 
     /**
      * Get cast type from native property type.
-     * 
-     * @param  \ReflectionProperty  $property 
-     * @return null|string 
+     *
+     * @param  \ReflectionProperty  $property
+     * @return null|string
      */
     protected function getFluentCastType(ReflectionProperty $property): ?string
     {
@@ -174,9 +174,9 @@ trait Fluent
 
     /**
      * Get cast type defined by an attribute.
-     * 
-     * @param  \ReflectionAttribute  $attribute 
-     * @return null|string 
+     *
+     * @param  \ReflectionAttribute  $attribute
+     * @return null|string
      */
     protected function castFluentAttribute(ReflectionAttribute $attribute): ?string
     {

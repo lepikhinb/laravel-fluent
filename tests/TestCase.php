@@ -32,6 +32,7 @@ class TestCase extends TestbenchTestCase
             $table->decimal('as_decimal')->nullable();
             $table->timestamp('as_date')->nullable();
             $table->string('withoutCast')->nullable();
+            $table->json('nullable_array')->nullable();
             $table->timestamps();
         });
     }

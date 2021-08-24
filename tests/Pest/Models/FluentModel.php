@@ -21,6 +21,7 @@ class FluentModel extends Model
     public Collection $collection;
     public Carbon $carbon;
     public bool $boolean;
+    public ?array $nullable_array;
 
     #[Cast('decimal:2')]
     public float $decimal;
