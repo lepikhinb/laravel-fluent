@@ -120,7 +120,7 @@ trait Fluent
             ->each(function (ReflectionProperty $property) {
                 $value = $this->getAttribute($property->getName());
 
-                if (is_null($value) && !$property->getType()->allowsNull()) {
+                if (is_null($value) && ! $property->getType()->allowsNull()) {
                     return;
                 }
 
