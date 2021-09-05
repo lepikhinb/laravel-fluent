@@ -4,7 +4,7 @@ namespace Based\Fluent\Relations;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_CLASS|Attribute::TARGET_PROPERTY)]
 class BelongsTo extends OneRelation
 {
     public function __construct(

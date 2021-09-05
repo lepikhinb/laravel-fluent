@@ -29,7 +29,7 @@ trait HasRelations
                             && is_subclass_of($attribute->getName(), AbstractRelation::class);
                     });
 
-                if (!$attribute) {
+                if (! $attribute) {
                     return;
                 }
 
@@ -37,7 +37,7 @@ trait HasRelations
                 $arguments = $attribute->getArguments();
 
                 if (is_subclass_of($attribute->getName(), OneRelation::class)) {
-                    if (!count($arguments)) {
+                    if (! count($arguments)) {
                         $arguments[] = Str::snake($property->getName()) . '_' . self::getModel()->getKeyName();
                     }
 
@@ -51,7 +51,7 @@ trait HasRelations
     }
 
     /**
-     * Get relations defined as public properties
+     * Get relations defined as public properties.
      *
      * @return \Illuminate\Support\Collection<ReflectionProperty>|ReflectionProperty[]
      */
@@ -76,10 +76,10 @@ trait HasRelations
     }
 
     /**
-     * Get fluently defined relation
-     * 
-     * @param  string  $key 
-     * @return null|\ReflectionProperty 
+     * Get fluently defined relation.
+     *
+     * @param  string  $key
+     * @return null|\ReflectionProperty
      */
     public function getFluentRelation(string $key): ?ReflectionProperty
     {
@@ -103,7 +103,7 @@ trait HasRelations
         $fluentRelation = $this->getFluentRelation($relation);
         $fluentRelationType = $fluentRelation->getType();
 
-        if ($fluentRelation && ($fluentRelationType->allowsNull() || !is_null($value))) {
+        if ($fluentRelation && ($fluentRelationType->allowsNull() || ! is_null($value))) {
             $this->{$relation} = $fluentRelationType->getName() == Collection::class
                 ? collect($value)
                 : $value;
