@@ -14,11 +14,4 @@ class Feature extends Model
     public Product $product;
 
     protected $guarded = [];
-
-    /*
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
-    */
 }
