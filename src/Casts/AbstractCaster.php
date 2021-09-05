@@ -2,7 +2,7 @@
 
 namespace Based\Fluent\Casts;
 
-class AbstractCaster
+abstract class AbstractCaster
 {
     public string $name;
 }

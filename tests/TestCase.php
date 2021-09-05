@@ -36,5 +36,18 @@ class TestCase extends TestbenchTestCase
             $table->string('encrypted')->nullable();
             $table->timestamps();
         });
+
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('category_id');
+            $table->string('name');
+            $table->timestamps();
+        });
     }
 }
