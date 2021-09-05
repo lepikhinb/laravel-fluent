@@ -32,6 +32,7 @@ class Product extends Model
 {
     use Fluent;
 
+    public Category $category;
     public Collection $features;
     public float $price;
     public int $available;
@@ -56,6 +57,7 @@ class User extends Model
 }
 ```
 
+### Model attributes
 Define the public properties. `laravel-fluent` supports all native types and Laravel primitive casts:
 ```php
 <?php
@@ -75,6 +77,48 @@ class Order extends Model
 }
 ```
 
+### Relations
+The package also handles relationships.
+
+```php
+<?php
+
+class Product extends Model
+{
+    use Fluent;
+
+    #[Relation]
+    public Collection $features;
+    public Category $category;
+
+    public function features(): HasMany
+    {
+        return $this->hasMany(Feature::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+}
+```
+
+Relations method declaration is still required for proper autocompletion. However, the package can automatically resolve relations from attributes.
+
+```php
+<?php
+
+class Product extends Model
+{
+    use Fluent;
+
+    #[HasMany(Feature::class)]
+    public Collection $features;
+    #[BelongsTo]
+    public Category $category;
+}
+```
+
 ## Testing
 
 ```bash
@@ -82,8 +126,8 @@ composer test
 ```
 
 ## Todo
+- [ ] Mutators
 - [ ] Migration generator
-- [ ] Relationships
 
 ## Credits
 

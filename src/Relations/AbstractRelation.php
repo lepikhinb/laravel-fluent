@@ -1,6 +1,6 @@
 <?php
 
-namespace Based\Fluent\Casts;
+namespace Based\Fluent\Relations;
 
 abstract class AbstractRelation
 {

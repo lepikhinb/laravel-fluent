@@ -2,15 +2,15 @@
 
 namespace Based\Fluent\Tests\Models;
 
-use Based\Fluent\Casts\BelongsTo;
 use Based\Fluent\Fluent;
+use Based\Fluent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class Feature extends Model
 {
     use Fluent;
 
-    #[BelongsTo('product_id')]
+    #[BelongsTo]
     public Product $product;
 
     protected $guarded = [];

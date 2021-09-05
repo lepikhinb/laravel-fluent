@@ -97,3 +97,20 @@ test('define belongsto with an attribute', function () {
 
     assertEquals('mbpro', $product2->name);
 });
+
+test('eagerly load relations defined with attributes', function () {
+    /** @var Category $category */
+    $category = Category::create(['name' => 'laptops']);
+    /** @var Product $product */
+    $product = $category->products()->create(['name' => 'mbpro']);
+    /** @var Feature $feature */
+    $feature = $product->features()->create(['name' => 'color']);
+
+    $product = Product::with('features.product')->first();
+
+    assertInstanceOf(Feature::class, $product->features->first());
+    assertEquals($feature->id, $product->features->first()->id);
+
+    assertInstanceOf(Product::class, $product->features->first()->product);
+    assertEquals($product->id, $product->features->first()->product->id);
+});

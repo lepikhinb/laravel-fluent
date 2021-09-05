@@ -3,8 +3,8 @@
 namespace Based\Fluent;
 
 use Based\Fluent\Casts\AbstractCaster;
-use Based\Fluent\Casts\AbstractRelation;
 use Based\Fluent\Casts\Cast;
+use Based\Fluent\Relations\AbstractRelation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;

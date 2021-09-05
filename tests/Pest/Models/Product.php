@@ -2,8 +2,8 @@
 
 namespace Based\Fluent\Tests\Models;
 
-use Based\Fluent\Casts\HasMany;
 use Based\Fluent\Fluent;
+use Based\Fluent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;

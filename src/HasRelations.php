@@ -2,9 +2,9 @@
 
 namespace Based\Fluent;
 
-use Based\Fluent\Casts\AbstractRelation;
-use Based\Fluent\Casts\OneRelation;
-use Based\Fluent\Casts\Relation;
+use Based\Fluent\Relations\AbstractRelation;
+use Based\Fluent\Relations\OneRelation;
+use Based\Fluent\Relations\Relation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -20,9 +20,8 @@ trait HasRelations
     protected static function bootHasRelations()
     {
         static::getFluentRelations()
+            ->reject(fn (ReflectionProperty $property) => method_exists(static::class, $property->getName()))
             ->each(function (ReflectionProperty $property) {
-                // TODO skip if method is already defined
-
                 /** @var ReflectionAttribute $attribute */
                 $attribute = collect($property->getAttributes())
                     ->first(function (ReflectionAttribute $attribute) {
@@ -38,6 +37,10 @@ trait HasRelations
                 $arguments = $attribute->getArguments();
 
                 if (is_subclass_of($attribute->getName(), OneRelation::class)) {
+                    if (!count($arguments)) {
+                        $arguments[] = Str::snake($property->getName()) . '_' . self::getModel()->getKeyName();
+                    }
+
                     array_unshift($arguments, $property->getType()->getName());
                 }
 
