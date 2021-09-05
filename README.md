@@ -126,7 +126,6 @@ composer test
 ```
 
 ## Todo
-- [ ] Mutators
 - [ ] Migration generator
 
 ## Credits
