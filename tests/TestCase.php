@@ -49,5 +49,12 @@ class TestCase extends TestbenchTestCase
             $table->string('name');
             $table->timestamps();
         });
+
+        Schema::create('features', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id');
+            $table->string('name');
+            $table->timestamps();
+        });
     }
 }

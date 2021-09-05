@@ -1,6 +1,7 @@
 <?php
 
 use Based\Fluent\Tests\Models\Category;
+use Based\Fluent\Tests\Models\Feature;
 use Based\Fluent\Tests\Models\Product;
 
 use function PHPUnit\Framework\assertEquals;
@@ -68,4 +69,31 @@ test('set relations', function () {
 
     assertInstanceOf(Product::class, $category->products->first());
     assertEquals($product->id, $category->products->first()->id);
+});
+
+test('define hasmany with an attribute', function () {
+    /** @var Category $category */
+    $category = Category::create(['name' => 'laptops']);
+    /** @var Product $product */
+    $product = $category->products()->create(['name' => 'mbpro']);
+    $product->features()->create(['name' => 'color']);
+
+    /** @var Feature $feature */
+    $feature = $product->features()->first();
+
+    assertEquals('color', $feature->name);
+});
+
+test('define belongsto with an attribute', function () {
+    /** @var Category $category */
+    $category = Category::create(['name' => 'laptops']);
+    /** @var Product $product */
+    $product = $category->products()->create(['name' => 'mbpro']);
+    /** @var Feature $feature */
+    $feature = $product->features()->create(['name' => 'color']);
+
+    /** @var Product $product2 */
+    $product2 = $feature->product()->first();
+
+    assertEquals('mbpro', $product2->name);
 });

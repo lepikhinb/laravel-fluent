@@ -3,8 +3,11 @@
 namespace Based\Fluent;
 
 use Based\Fluent\Casts\AbstractRelation;
+use Based\Fluent\Casts\OneRelation;
+use Based\Fluent\Casts\Relation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
@@ -12,22 +15,52 @@ use ReflectionProperty;
 /** @mixin \Based\Fluent\Fluent */
 trait HasRelations
 {
-    protected Collection $fluentRelations;
+    protected static Collection $fluentRelations;
+
+    protected static function bootHasRelations()
+    {
+        static::getFluentRelations()
+            ->each(function (ReflectionProperty $property) {
+                // TODO skip if method is already defined
+
+                /** @var ReflectionAttribute $attribute */
+                $attribute = collect($property->getAttributes())
+                    ->first(function (ReflectionAttribute $attribute) {
+                        return $attribute->getName() != Relation::class
+                            && is_subclass_of($attribute->getName(), AbstractRelation::class);
+                    });
+
+                if (!$attribute) {
+                    return;
+                }
+
+                $methodName = Str::camel(class_basename($attribute->getName()));
+                $arguments = $attribute->getArguments();
+
+                if (is_subclass_of($attribute->getName(), OneRelation::class)) {
+                    array_unshift($arguments, $property->getType()->getName());
+                }
+
+                self::resolveRelationUsing($property->getName(), function (self $model) use ($methodName, $arguments) {
+                    return $model->{$methodName}(...$arguments);
+                });
+            });
+    }
 
     /**
      * Get relations defined as public properties
      *
      * @return \Illuminate\Support\Collection<ReflectionProperty>|ReflectionProperty[]
      */
-    public function getFluentRelations(): Collection
+    protected static function getFluentRelations(): Collection
     {
-        if (isset($this->fluentRelations)) {
-            return $this->fluentRelations;
+        if (isset(static::$fluentRelations)) {
+            return static::$fluentRelations;
         }
 
-        $reflection = new ReflectionClass($this);
+        $reflection = new ReflectionClass(static::class);
 
-        return $this->fluentRelations = collect($reflection->getProperties(ReflectionProperty::IS_PUBLIC))
+        return static::$fluentRelations = collect($reflection->getProperties(ReflectionProperty::IS_PUBLIC))
             ->filter(fn (ReflectionProperty $property) => $property->class === self::class)
             ->filter(function (ReflectionProperty $property) {
                 $attributes = collect($property->getAttributes());
