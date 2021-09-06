@@ -32,7 +32,6 @@ class Product extends Model
 {
     use Fluent;
 
-    public Category $category;
     public Collection $features;
     public float $price;
     public int $available;
