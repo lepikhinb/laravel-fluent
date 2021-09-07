@@ -101,9 +101,14 @@ trait HasRelations
         $this->relations[$relation] = $value;
 
         $fluentRelation = $this->getFluentRelation($relation);
+
+        if (! $fluentRelation) {
+            return $this;
+        }
+
         $fluentRelationType = $fluentRelation->getType();
 
-        if ($fluentRelation && ($fluentRelationType->allowsNull() || ! is_null($value))) {
+        if ($fluentRelationType->allowsNull() || ! is_null($value)) {
             $this->{$relation} = $fluentRelationType->getName() == Collection::class
                 ? collect($value)
                 : $value;
