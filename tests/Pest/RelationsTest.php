@@ -2,10 +2,12 @@
 
 use Based\Fluent\Tests\Models\Category;
 use Based\Fluent\Tests\Models\Feature;
+use Based\Fluent\Tests\Models\Mediable;
 use Based\Fluent\Tests\Models\Product;
 
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertInstanceOf;
+use function PHPUnit\Framework\assertTrue;
 
 test('has many', function () {
     /** @var Category $category */
@@ -113,4 +115,10 @@ test('eagerly load relations defined with attributes', function () {
 
     assertInstanceOf(Product::class, $product->features->first()->product);
     assertEquals($product->id, $product->features->first()->product->id);
+});
+
+test('fluent properties can only be declared in model classes', function () {
+    $mediable = Mediable::create([]);
+
+    assertTrue($mediable->exists());
 });

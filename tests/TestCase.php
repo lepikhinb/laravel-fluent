@@ -56,5 +56,10 @@ class TestCase extends TestbenchTestCase
             $table->string('name');
             $table->timestamps();
         });
+
+        Schema::create('mediables', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
     }
 }

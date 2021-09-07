@@ -40,7 +40,16 @@ trait HasProperties
         $reflection = new ReflectionClass($this);
 
         return $this->fluentProperties = collect($reflection->getProperties(ReflectionProperty::IS_PUBLIC))
-            ->filter(fn (ReflectionProperty $property) => $property->class === self::class)
+            ->filter(fn (ReflectionProperty $property) => $property->getDeclaringClass()->getName() === self::class)
+            ->reject(function (ReflectionProperty $property) {
+                return collect($property->getDeclaringClass()->getTraits())
+                    ->contains(function (ReflectionClass $trait) use ($property) {
+                        return collect($trait->getProperties(ReflectionProperty::IS_PUBLIC))
+                            ->contains(function (ReflectionProperty $traitProperty) use ($property) {
+                                return $traitProperty->getName() === $property->getName();
+                            });
+                    });
+            })
             ->reject(function (ReflectionProperty $property) {
                 $attributes = collect($property->getAttributes());
 
