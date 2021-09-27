@@ -50,6 +50,7 @@ trait HasProperties
                             });
                     });
             })
+            ->filter(fn (ReflectionProperty $property) => $property->hasType())
             ->reject(function (ReflectionProperty $property) {
                 $attributes = collect($property->getAttributes());
 
@@ -139,7 +140,7 @@ trait HasProperties
             ->each(function (ReflectionProperty $property) {
                 $value = $this->getAttribute($property->getName());
 
-                if (is_null($value) && ! $property->getType()->allowsNull()) {
+                if (is_null($value) && !$property->getType()->allowsNull()) {
                     return;
                 }
 
