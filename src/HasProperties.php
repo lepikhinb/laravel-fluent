@@ -50,6 +50,7 @@ trait HasProperties
                             });
                     });
             })
+            ->reject(fn (ReflectionProperty $property) => $property->getType() === null)
             ->reject(function (ReflectionProperty $property) {
                 $attributes = collect($property->getAttributes());
 
