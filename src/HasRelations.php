@@ -65,6 +65,7 @@ trait HasRelations
 
         return static::$fluentRelations = collect($reflection->getProperties(ReflectionProperty::IS_PUBLIC))
             ->filter(fn (ReflectionProperty $property) => $property->class === self::class)
+            ->reject(fn (ReflectionProperty $property) => $property->getType() === null)
             ->filter(function (ReflectionProperty $property) {
                 $attributes = collect($property->getAttributes());
 
