@@ -29,7 +29,7 @@ trait HasRelations
                             && is_subclass_of($attribute->getName(), AbstractRelation::class);
                     });
 
-                if (!$attribute) {
+                if (! $attribute) {
                     return;
                 }
 
@@ -37,7 +37,7 @@ trait HasRelations
                 $arguments = $attribute->getArguments();
 
                 if (is_subclass_of($attribute->getName(), OneRelation::class)) {
-                    if (!count($arguments)) {
+                    if (! count($arguments)) {
                         $arguments[] = Str::snake($property->getName()) . '_' . self::getModel()->getKeyName();
                     }
 
@@ -103,13 +103,13 @@ trait HasRelations
 
         $fluentRelation = $this->getFluentRelation($relation);
 
-        if (!$fluentRelation) {
+        if (! $fluentRelation) {
             return $this;
         }
 
         $fluentRelationType = $fluentRelation->getType();
 
-        if ($fluentRelationType->allowsNull() || !is_null($value)) {
+        if ($fluentRelationType->allowsNull() || ! is_null($value)) {
             $this->{$relation} = $fluentRelationType->getName() == Collection::class
                 ? collect($value)
                 : $value;
