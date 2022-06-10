@@ -25,8 +25,8 @@
         "illuminate/support": "^9.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^6.9",
-        "nunomaduro/larastan": "^0.6.10",
+        "orchestra/testbench": "^7.5",
+        "nunomaduro/larastan": "^2.1.10",
         "pestphp/pest": "^1.2",
         "pestphp/pest-plugin-laravel": "^1.2"
     },
