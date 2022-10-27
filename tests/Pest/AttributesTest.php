@@ -1,7 +1,7 @@
 <?php
 
 use Based\Fluent\Tests\Models\FluentModel;
-
+use Based\Fluent\Tests\Models\FluentModelWithDefaults;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertTrue;
 
@@ -95,4 +95,34 @@ test('public properties populate on update', function () {
     assertEquals('two', $model->string);
     assertEquals($model->getAttribute('string'), $model->string);
     assertEquals('two', $model->toArray()['string']);
+});
+
+test('managed public properties receive defaults', function () {
+    $model = new FluentModelWithDefaults();
+
+    // show that we can set a default via eloquent's $attributes array
+    assertEquals(FluentModelWithDefaults::ALPHA_DEFAULT, $model->alpha ?? null);
+    // show that we can set a default directly on the PHP property
+    assertEquals(FluentModelWithDefaults::BETA_DEFAULT, $model->beta ?? null);
+    // not set with a default
+    assertEquals(null, $model->gamma ?? null);
+});
+
+test('managed public property defaults do not clobber model loading', function () {
+    $customAttributes = [
+        'alpha' => 1,
+        'beta' => 2,
+        'gamma' => 3
+    ];
+
+    // this is semantically identical to how eloquent models are initialized when retrieved (i.e., from a database)
+    $model = (new FluentModelWithDefaults())->newFromBuilder($customAttributes);
+
+    foreach ($customAttributes as $k => $v) {
+        /*
+         * for each custom attribute we set, ensure our desired value stuck on the model,
+         * and that we did NOT clobber the intended value with the default value
+         */
+        assertEquals($v, $model->{$k});
+    }
 });
