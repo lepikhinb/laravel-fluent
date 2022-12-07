@@ -2,6 +2,7 @@
 
 namespace Based\Fluent\Tests\Models;
 
+use Carbon\CarbonImmutable;
 use Based\Fluent\Casts\AsDecimal;
 use Based\Fluent\Casts\Cast;
 use Based\Fluent\Fluent;
@@ -20,6 +21,7 @@ class FluentModel extends Model
     public array $array;
     public Collection $collection;
     public Carbon $carbon;
+    public CarbonImmutable $carbon_immutable;
     public bool $boolean;
     public ?array $nullable_array;
 

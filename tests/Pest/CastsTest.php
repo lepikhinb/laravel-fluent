@@ -100,6 +100,21 @@ test('cast as datetime (carbon)', function () {
     assertEquals($model->getAttribute('carbon'), $model->carbon);
 });
 
+test('cast as immutable_datetime (carbon)', function () {
+    $date = now()->startOfDay()->toImmutable();
+
+    $model = new FluentModel([
+        'carbon_immutable' => $date,
+    ]);
+
+    $model->save();
+
+    assertDatabaseCount('fluent_models', 1);
+    assertEquals($model->getAttribute('carbon_immutable'), $model->carbon_immutable);
+    assertEquals($date, $model->carbon_immutable);
+    assertEquals('immutable_datetime', $model->getCasts()['carbon_immutable']);
+});
+
 test('cast as boolean', function () {
     $model = new FluentModel([
         'boolean' => true,
