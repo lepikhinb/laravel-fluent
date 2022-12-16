@@ -2,11 +2,11 @@
 
 namespace Based\Fluent;
 
-use Carbon\CarbonImmutable;
 use Based\Fluent\Casts\AbstractCaster;
 use Based\Fluent\Casts\Cast;
 use Based\Fluent\Relations\AbstractRelation;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use ReflectionAttribute;
