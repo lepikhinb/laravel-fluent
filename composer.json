@@ -40,5 +40,10 @@
     "scripts": {
         "test": "./vendor/bin/pest",
         "stan": "./vendor/bin/phpstan analyse"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }

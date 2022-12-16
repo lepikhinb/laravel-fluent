@@ -2,6 +2,7 @@
 
 namespace Based\Fluent;
 
+use Carbon\CarbonImmutable;
 use Based\Fluent\Casts\AbstractCaster;
 use Based\Fluent\Casts\Cast;
 use Based\Fluent\Relations\AbstractRelation;
@@ -192,6 +193,7 @@ trait HasProperties
         return match ($type) {
             Collection::class => 'collection',
             Carbon::class => 'datetime',
+            CarbonImmutable::class => 'immutable_datetime',
             'bool' => 'boolean',
             'int' => 'integer',
             default => $type,

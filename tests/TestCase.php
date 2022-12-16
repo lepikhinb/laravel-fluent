@@ -27,6 +27,7 @@ class TestCase extends TestbenchTestCase
             $table->json('array')->nullable();
             $table->json('collection')->nullable();
             $table->timestamp('carbon')->nullable();
+            $table->timestamp('carbon_immutable')->nullable();
             $table->boolean('boolean')->nullable();
             $table->decimal('decimal')->nullable();
             $table->decimal('as_decimal')->nullable();
