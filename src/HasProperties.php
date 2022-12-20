@@ -17,9 +17,11 @@ use ReflectionProperty;
 trait HasProperties
 {
     protected Collection $fluentProperties;
+    protected bool $fluentAvoidParentSetAttribute = false;
 
     public function __construct(array $attributes = [])
     {
+        $this->buildFluentDefaults();
         $this->buildFluentCasts();
 
         parent::__construct($attributes);
@@ -63,6 +65,48 @@ trait HasProperties
     }
 
     /**
+     * Overload the method to avoid interfering with model loading
+     * Set the array of model attributes. No checking is done.
+     *
+     * @param  array  $attributes
+     * @param  bool  $sync
+     * @return $this
+     */
+    public function setRawAttributes(array $attributes, $sync = false)
+    {
+        $keys = $this->getFluentProperties()
+            ->filter(fn (ReflectionProperty $property) => $property->isInitialized($this))
+            ->map(fn (ReflectionProperty $property) => $property->getName())->toArray();
+
+        /*
+         * Unset all properties that we're managing, so any current values aren't prioritized
+         * over the ones being set here. We would otherwise clobber new values during operations
+         * that retreive a model, such as Model::newFromBuilder or Model::refresh.
+         */
+        foreach ($keys as $key) {
+            unset($this->{$key});
+        }
+
+        parent::setRawAttributes($attributes, $sync);
+
+        try {
+            /*
+             * Laravel has already set these attributes internally— avoid redundant calls to
+             * parent::setAttribute during this logic (due to property assignment calling __set).
+             */
+            $this->fluentAvoidParentSetAttribute = true;
+
+            foreach ($keys as $key) {
+                $this->{$key} = $this->getAttribute($key);
+            }
+        } finally {
+            $this->fluentAvoidParentSetAttribute = false;
+        }
+
+        return $this;
+    }
+
+    /**
      * Overload the method to populate public properties from Model attributes
      * Set a given attribute on the model.
      *
@@ -72,6 +116,10 @@ trait HasProperties
      */
     public function setAttribute($key, $value)
     {
+        if ($this->fluentAvoidParentSetAttribute) {
+            return $this;
+        }
+
         // Tricky part to prevent attribute overwriting by mergeAttributesFromClassCasts
         if ($this->hasFluentProperty($key)) {
             unset($this->{$key});
@@ -147,6 +195,19 @@ trait HasProperties
 
                 $this->{$property->getName()} = $value;
             });
+    }
+
+    protected function buildFluentDefaults(): void
+    {
+        $propertyDefinedDefaults = [];
+
+        $this->getFluentProperties()
+            ->filter(fn (ReflectionProperty $property) => $property->hasDefaultValue())
+            ->each(function (ReflectionProperty $property) use (&$propertyDefinedDefaults) {
+                $propertyDefinedDefaults[$property->getName()] = $property->getDefaultValue();
+            });
+
+        $this->attributes = array_merge($this->attributes, $propertyDefinedDefaults);
     }
 
     /**
